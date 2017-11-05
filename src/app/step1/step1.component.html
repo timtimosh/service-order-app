@@ -1,0 +1,98 @@
+<div id="step1">
+    <div *ngIf="service_container.getChosen()">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="service_type">Тип услуги:</label>
+                <select (change)="onServiceChanged($event)" name="category_id" id="service_type"
+                        class="form-control">
+                    <option *ngFor="let service of service_container.getServices()" value="{{service.id_category}}"
+                            [selected]="service === service_container.getChosen()">
+                        {{service.name}}
+                    </option>
+                </select>
+            </div>
+            <div *ngFor="let option of service_container.getChosen().getOptions()" class="form-group">
+                <label>{{option.name}}</label>
+                <select (change)="onServiceTypeOptionValueChanged(option.id_attribute, $event)"
+                        class="form-control">
+                    <option *ngFor="let value of option.getValues()"
+                            [selected]="value === option.getSelectedValue()"
+                            value="{{value.id_attr_val}}">
+                        {{value.name}}
+                    </option>
+                </select>
+            </div>
+
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr class="info">
+                    <th>Опция</th>
+                    <th class="cell-for-product-{{child_product.id_product}}"
+                        *ngFor="let child_product of service_container.getChosen().getProducts()">{{child_product.name}}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let child_product of getCurrentGroupedProductOption()">
+                    <td>{{child_product.name}}</td>
+                    <td class="text-center"
+                        *ngFor="let current_service_child_product of service_container.getChosen().getProducts()"
+                        [ngClass]="[service_container.getChosen().getChosenProduct() && service_container.getChosen().getChosenProduct().id_product === current_service_child_product.id_product ? 'active-price-cell' : '']">
+                        <div *ngIf="current_service_child_product.hasChild(child_product); else elseBlock">
+                            <input value="1" type="checkbox" checked="checked" disabled>
+                        </div>
+                        <ng-template #elseBlock><input value="0" type="checkbox" disabled></ng-template>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr class="price info">
+                    <td><label>Цена</label></td>
+                    <td class="text-center"
+                        *ngFor="let current_service_child_product of service_container.getChosen().getProducts()">
+                        {{current_service_child_product.getPrice()}}
+                    </td>
+                </tr>
+                <tr class="">
+                    <td><label>Выберите</label></td>
+
+
+                    <td class="text-center"
+                        *ngFor="let current_service_child_product of service_container.getChosen().getProducts()">
+                        <div *ngIf="service_container.getChosen().getChosenProduct(); else elseBlock">
+                            <button type="button" (click)="onCurrentProductChange(current_service_child_product)"
+                                    class="btn btn-sm btn-success"
+                                    [disabled]="service_container.getChosen().getChosenProduct().id_product === current_service_child_product.id_product">
+                                Заказать
+                            </button>
+                        </div>
+                        <ng-template #elseBlock>
+                            <button type="button" (click)="onCurrentProductChange(current_service_child_product)"
+                                    class="btn btn-sm btn-success">Заказать
+                            </button>
+                        </ng-template>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="order-info row">
+            <div class="col-xs-12 col-sm-6 ordered-items">
+                <div *ngIf="service_container.getChosen().getChosenProduct()">
+                    Вы выбрали: <label>{{service_container.getChosen().getChosenProduct().name}}</label>
+                    <p *ngFor="let option of service_container.getChosen().getOptions()">
+                        {{option.name}}: <label>{{option.getSelectedValue().name}}</label>
+                    </p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 ordered-price">
+                <p *ngIf="service_container.getChosen().getChosenProduct()">Сумма заказа: <label>{{service_container.getChosen().getChosenProduct().getPrice()}}</label></p>
+
+                <button class="btn btn-info" [disabled]="nextButtonDisabled()" (click)="onNextClick()">Дальше  <span class="glyphicon glyphicon-chevron-right"></span></button>
+            </div>
+        </div>
+    </div>
+</div>

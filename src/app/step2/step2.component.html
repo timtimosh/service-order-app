@@ -1,0 +1,64 @@
+<div id="step2">
+    <div class="row service-center ">
+        <div class="col-sm-4 col-xs-12">
+            <div class="calendar">
+                <my-date-picker name="mydate" [options]="myDatePickerOptions" locale="ru"
+                                [(ngModel)]="datapicker_model" (dateChanged)="onDatapickerDateChange($event)" required></my-date-picker>
+            </div>
+            <div *ngFor="let tsc of product.getTscList()">
+                <input id="tsc-{{tsc.id_tsc}}" type="radio"
+                       (click)="onCurrentTscChange(tsc)" name="tsc"
+                        [checked]="tsc.isChosen()">
+                <label for="tsc-{{tsc.id_tsc}}">{{tsc.name}}</label>
+            </div>
+        </div>
+        <div class="col-sm-8 col-xs-12">
+            <div class="service-time" *ngIf="product.getChosenTsc()">
+                <div class="alert alert-info" *ngIf="!product.getChosenTsc().getEnroll()">    <span class="glyphicon glyphicon-exclamation-sign"></span> Выберите время на которое Вас записать</div>
+                <button class="btn btn-default btn-sm" *ngFor="let tsc_time of product.getChosenTsc().getTime()"
+                        (click)="onChosenTscChooseTime(tsc_time)" [disabled]="tsc_time.isAviable() === false"
+                        type="button"
+                        [ngClass]="[tsc_time.isChosen() === true ? 'btn-primary' : '']">
+                    {{tsc_time.date}}
+                </button>
+            </div>
+            <agm-map [latitude]="map_center_lat" [longitude]="map_center_lng" [zoom]="map_zoom">
+                <agm-marker *ngFor="let tsc of product.getTscList(); let i = index" [latitude]="tsc.lat" [longitude]="tsc.lng"
+                            (markerClick)="mapClickedMarker(tsc)">
+                    <agm-snazzy-info-window [maxWidth]="200" [closeWhenOthersOpen]="true">
+                        <ng-template>
+                            {{tsc.name}}
+                        </ng-template>
+                    </agm-snazzy-info-window>
+                </agm-marker>
+            </agm-map>
+        </div>
+
+    </div>
+
+    <div class="order-info row">
+        <div class="col-xs-12 col-sm-8 ordered-items">
+            <label>Ваш заказ:</label> <label>{{product.name}}</label><br>
+            <span *ngFor="let option of service.getOptions(); let i = index; let last = last">
+                    {{option.name}}: <label>{{option.getSelectedValue().name}}</label>
+                <span *ngIf="last === false"> / </span></span>
+            <div *ngIf="product.getChosenTsc()">
+                Сервисный центр: <label>{{product.getChosenTsc().name}}</label>
+                <span *ngIf="product.getChosenTsc().getEnroll()">/ Время заказа: <label>{{product.getChosenTsc().getEnroll().getDate()}}</label></span>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 ordered-price">
+            <br>Сумма заказа:
+            <label *ngIf="product.getChosenTsc(); else elsePriceBlock">{{product.getChosenTsc().getPrice()}}</label>
+            <ng-template #elsePriceBlock>{{product.price}}</ng-template>
+        </div>
+    </div>
+    <div class="order-controlls row">
+        <div class="col-sm-6 prev">
+            <button type="button" class="btn btn-danger" routerLink="/step1"><span class="glyphicon glyphicon-chevron-left"></span> Назад</button>
+        </div>
+        <div class="col-sm-6 next">
+            <button type="button" [disabled]="nextButtonDisabled()" class="btn btn-info" routerLink="/step3">Дальше  <span class="glyphicon glyphicon-chevron-right"></span></button>
+        </div>
+    </div>
+</div>

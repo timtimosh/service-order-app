@@ -1,0 +1,95 @@
+<div id="step3">
+    <div class="row">
+
+        <div class="col-sm-6">
+            <label>Ваш заказ:</label> <label>{{product.name}}</label><br>
+            <span *ngFor="let option of service.getOptions(); let i = index; let last = last">
+                    {{option.name}}: <label>{{option.getSelectedValue().name}}</label>
+                <span *ngIf="last === false"> / </span></span>
+            <div>
+                Сервисный центр: <label>{{product.getChosenTsc().name}}</label>
+                <br> Время заказа: <label>{{product.getChosenTsc().getEnroll().getDate()}}</label>
+            </div>
+            <div>
+                Сумма заказа: <label>{{product.getChosenTsc().getPrice()}}</label>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <form class="form-horizontal" [formGroup]="orderForm" (submit)="makeOrder()" novalidate>
+                <div class="alert alert-info" *ngIf="!orderForm.valid">
+                    Заполните все необходимые поля для завершения заказа
+                </div>
+
+                <fieldset>
+                    <div class="form-group">
+
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input class="form-control" placeholder="Ваше имя" formControlName="name"
+                                       (change)="user.name = orderForm.controls.name.value">
+                            </div>
+                            <control-messages [control]="orderForm.controls.name"></control-messages>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                                <input class="form-control" placeholder="Email" formControlName="email"
+                                       (change)="user.email = orderForm.controls.email.value">
+                            </div>
+                            <control-messages [control]="orderForm.controls.email"></control-messages>
+                        </div>
+
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+                                <input class="form-control" formControlName="phone"
+                                       [textMask]="{mask: mask}"
+                                       placeholder="+7 (___) ___-__-__"
+                                       (change)="user.phone = orderForm.controls.phone.value">
+                            </div>
+                            <control-messages [control]="orderForm.controls.phone"></control-messages>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-12 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                                <textarea class="form-control" name="comment" placeholder="Комментарий"
+                                          (change)="user.comment = $event.target.value" autocomplete="off">{{user.comment}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-12">
+                            <button (click)="makeOrder()" type="button" class="btn btn-warning pull-right"
+                                    [disabled]="orderForm.valid === false">Записаться<span
+                                    class="glyphicon glyphicon-send"></span></button>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="order-controlls row">
+        <div class="col-sm-6 prev">
+            <button type="button" class="btn btn-danger" routerLink="/step2"> <span class="glyphicon glyphicon-chevron-left"></span> Назад</button>
+        </div>
+    </div>
+</div>

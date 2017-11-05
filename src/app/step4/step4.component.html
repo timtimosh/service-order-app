@@ -1,0 +1,20 @@
+<div id="step4">
+    <div class="alert alert-success fade in alert-dismissable">
+        <strong><span class="glyphicons glyphicons-ok-sign"></span>  Заказ #{{order.order_id}} создан.</strong> Мы благодарим за то,
+        что Вы воспользовались нашими услугами!
+    </div>
+    <table class="table table-striped">
+        <tr><td colspan="2"><b>{{order.product}}</b></td><tr>
+        <tr *ngFor="let option of order.selected_options; let i = index; let last = last">
+            <td>{{option.name}}</td> <td>{{option.chosen_value}}</td>
+        </tr>
+        <tr><td><b>Адреc</b></td><td>{{order.address}}</td></tr>
+        <tr><td><b>Время</b></td><td>{{order.enroll_date}}</td></tr>
+        <tr><td><b>Цена</b></td><td>{{order.getPrice()}}</td></tr>
+        <tr><td colspan="2">{{order.user.name}} / {{order.user.phone}} / {{order.user.email}}</td></tr>
+        <tr *ngIf="order.user.comment"><td colspan="2">{{order.user.comment}}</td></tr>
+    </table>
+</div>
+<div class="order-controlls">
+        <button type="button" class="btn btn-primary" (click)="goBackMakeNewOrder()">Сделать еще заказ</button>
+</div>
